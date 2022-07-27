@@ -22,3 +22,12 @@ module.exports.createUser = (req, res) => {
       res.status(500).send({ message: 'Произошла ошибка'})
     });
 };
+
+module.exports.updateUser = (req, res) => {
+  const { name, about } = req.body;
+  User.findByIdAndUpdate(req.user._id, { name, about })
+    .then(user => res.status(200).send({ data: user}))
+    .catch(() => {
+      res.status(500).send({ message: 'Произошла ошибка'})
+    });
+} ;
