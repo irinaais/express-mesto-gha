@@ -1,17 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { NOT_FOUND_CODE } = require("./utils/constants");
+const { NOT_FOUND_CODE } = require('./utils/constants');
 
 const { PORT = 3000 } = process.env;
 const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '62e06557b4f23d0f5b1ec9d2' // захардкодили id создателя для всех карточек
+    _id: '62e06557b4f23d0f5b1ec9d2', // захардкодили id создателя для всех карточек
   };
 
   next();
@@ -21,7 +21,7 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use((req, res) => {
-  res.status(NOT_FOUND_CODE).send({ message: 'Указанная страница не найдена'})
+  res.status(NOT_FOUND_CODE).send({ message: 'Указанная страница не найдена' });
 });
 
 async function main() {
@@ -33,4 +33,3 @@ async function main() {
 }
 
 main();
-
