@@ -19,6 +19,7 @@ module.exports.createCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new BadRequestError('Переданы некорректные данные');
+        return;
       }
       res.status(500).send({ message: 'Произошла ошибка'})
     });
@@ -29,12 +30,14 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка не найдена');
+        return;
       }
       res.status(200).send({ data: card })
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Переданы некорректные данные');
+        return;
       }
       res.status(500).send({ message: 'Произошла ошибка'})
     });
@@ -49,12 +52,14 @@ module.exports.likeCard = (req, res) => {
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Запрашиваемая карточка не найдена');
+        return;
       }
       res.status(200).send({ data: card })
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Переданы некорректные данные');
+        return;
       }
       res.status(500).send({ message: 'Произошла ошибка'})
     });
@@ -69,12 +74,14 @@ module.exports.dislikeCard = (req, res) => {
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Запрашиваемая карточка не найдена');
+        return;
       }
       res.status(200).send({ data: card })
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Переданы некорректные данные');
+        return;
       }
       res.status(500).send({ message: 'Произошла ошибка'})
     });
