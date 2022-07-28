@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-// const {NOT_FOUND_CODE} = require("./utils/constants");
+const {NOT_FOUND_CODE} = require("./utils/constants");
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -20,9 +20,9 @@ app.use((req, res, next) => {
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-// app.use((req, res) => {
-//   res.status(NOT_FOUND_CODE).send({ message: 'Указанная страница не найдена'})
-// });
+app.use((req, res) => {
+  res.status(NOT_FOUND_CODE).send({ message: 'Указанная страница не найдена'})
+});
 
 async function main() {
   await mongoose.connect('mongodb://localhost:27017/mestodb');
