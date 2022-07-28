@@ -1,18 +1,16 @@
 [![Tests](https://github.com/irinaais/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/irinaais/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/irinaais/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/irinaais/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
 # Проект Mesto фронтенд + бэкенд
 
+В проекте создаю сервер для работы сервиса Mesto, созданного на протяжении 4-12 проектных работ в Яндекс.Практикуме.
+Реализованы ручки для запроса карточек и пользователей. Можно создавать пользователей, карточки, а также удалять их и 
+ставить/убирайть лайки карточкам. Использовала: `Express`, `Node.js`, `JavaScript`, `MongoDB`,
+`Mongoose`,`Editorconfig`, `ESLint`, `Airbnb`, `Api`, `Postman`.
 
+### Планы по доработке
 
-## Настройка бейджей статуса тестов
-Перед началом работы над проектом рекомендуется исправить бейджи, отражающие статус прохождения тестов.
-Для этого замените разметку бейджей на следующий фрагмент, подставив вместо `${имя_пользователя}` и `${имя_репозитория}` соответствующие значения.
-
-```
-[![Tests for sprint 13](https://github.com/${имя_пользователя}/${имя репозитория}/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/${имя_пользователя}/${имя репозитория}/actions/workflows/tests-13-sprint.yml) 
-
-[![Tests for sprint 14](https://github.com/${имя_пользователя}/${имя репозитория}/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/${имя_пользователя}/${имя репозитория}/actions/workflows/tests-14-sprint.yml)
-```
-
+Добавить возможности:
+* регистрация и авторизация
+* подключение фронтенда
 
 ## Директории
 
