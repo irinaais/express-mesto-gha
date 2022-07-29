@@ -1,12 +1,9 @@
 const Card = require('../models/card');
-const {
-  CORRECT_CODE, NOT_FOUND_CODE, BAD_REQUEST_CODE, DEFAULT_ERROR_CODE,
-} = require('../utils/constants');
+const { NOT_FOUND_CODE, BAD_REQUEST_CODE, DEFAULT_ERROR_CODE } = require('../utils/constants');
 
 module.exports.sendCards = (req, res) => {
   Card.find({})
-    .populate('owner')
-    .then((cards) => res.status(CORRECT_CODE).send({ data: cards }))
+    .then((cards) => res.send({ data: cards }))
     .catch(() => {
       res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
     });
@@ -16,7 +13,7 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   const ownerId = req.user._id;
   Card.create({ name, link, owner: ownerId })
-    .then((card) => res.status(CORRECT_CODE).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
@@ -33,7 +30,7 @@ module.exports.deleteCard = (req, res) => {
         res.status(NOT_FOUND_CODE).send({ message: 'Указанная карточка не найдена' });
         return;
       }
-      res.status(CORRECT_CODE).send({ data: card });
+      res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -55,7 +52,7 @@ module.exports.likeCard = (req, res) => {
         res.status(NOT_FOUND_CODE).send({ message: 'Указанная карточка не найдена' });
         return;
       }
-      res.status(CORRECT_CODE).send({ data: card });
+      res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -77,7 +74,7 @@ module.exports.dislikeCard = (req, res) => {
         res.status(NOT_FOUND_CODE).send({ message: 'Указанная карточка не найдена' });
         return;
       }
-      res.status(CORRECT_CODE).send({ data: card });
+      res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
