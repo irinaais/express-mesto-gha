@@ -5,6 +5,8 @@ const {
   NOT_FOUND_CODE, BAD_REQUEST_CODE, DEFAULT_ERROR_CODE, AUTH_ERROR_CODE,
 } = require('../utils/constants');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 module.exports.sendUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
@@ -91,7 +93,7 @@ module.exports.login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'a89d0755fca60ef856a81a8232e825ccec62fe1398058b1b9e8c80cc4edf01ca', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
