@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { NOT_FOUND_CODE, BAD_REQUEST_CODE, DEFAULT_ERROR_CODE } = require('../utils/constants');
+const {
+  NOT_FOUND_CODE, BAD_REQUEST_CODE, DEFAULT_ERROR_CODE, AUTH_ERROR_CODE,
+} = require('../utils/constants');
 
 module.exports.sendUsers = (req, res) => {
   User.find({})
@@ -81,5 +83,25 @@ module.exports.updateAvatar = (req, res) => {
         return;
       }
       res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+    });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  User.findOne({ email })
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error('Неправильные почта или пароль'));
+      }
+      return bcrypt.compare(password, user.password);
+    })
+    .then((matched) => {
+      if (!matched) {
+        return Promise.reject(new Error('Неправильные почта или пароль'));
+      }
+      res.send({ message: 'Все верно' });
+    })
+    .catch((err) => {
+      res.status(AUTH_ERROR_CODE).send({ message: err.message });
     });
 };
