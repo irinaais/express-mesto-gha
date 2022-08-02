@@ -91,8 +91,13 @@ module.exports.login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'xc6fvgh8bjklkjh6n3gbcv4', { expiresIn: '7d' });
-      res.send({ token });
+      const token = jwt.sign({ _id: user._id }, 'a89d0755fca60ef856a81a8232e825ccec62fe1398058b1b9e8c80cc4edf01ca', { expiresIn: '7d' });
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        sameSite: true,
+      });
+      res.send({ message: 'Авторизация прошла успешна', token });
     })
     .catch((err) => {
       res.status(AUTH_ERROR_CODE).send({ message: err.message });
