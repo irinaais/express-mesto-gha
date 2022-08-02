@@ -105,3 +105,21 @@ module.exports.login = (req, res) => {
       res.status(AUTH_ERROR_CODE).send({ message: err.message });
     });
 };
+
+module.exports.getMe = (req, res) => {
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        res.status(NOT_FOUND_CODE).send({ message: 'Указанный пользователь не найден' });
+        return;
+      }
+      res.send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
+        return;
+      }
+      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+    });
+};
