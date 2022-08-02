@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
   NOT_FOUND_CODE, BAD_REQUEST_CODE, DEFAULT_ERROR_CODE, AUTH_ERROR_CODE,
@@ -89,7 +90,10 @@ module.exports.updateAvatar = (req, res) => {
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
-    .then((user) => {})
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'xc6fvgh8bjklkjh6n3gbcv4', { expiresIn: '7d' });
+      res.send({ token });
+    })
     .catch((err) => {
       res.status(AUTH_ERROR_CODE).send({ message: err.message });
     });
