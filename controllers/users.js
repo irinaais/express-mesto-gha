@@ -55,6 +55,8 @@ module.exports.createUser = (req, res, next) => {
       if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
         return;
+      } if (err.code === 11000) {
+        res.status(EMAIL_IS_TAKEN).send({ message: 'Пользователь с такой почтой уже зарегистрирован' });
       }
       next(err);
     });
