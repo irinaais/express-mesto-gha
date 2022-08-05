@@ -2,20 +2,21 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
-  NOT_FOUND_CODE, BAD_REQUEST_CODE, DEFAULT_ERROR_CODE, AUTH_ERROR_CODE,
+  NOT_FOUND_CODE, BAD_REQUEST_CODE, AUTH_ERROR_CODE, EMAIL_IS_TAKEN,
 } = require('../utils/constants');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-module.exports.sendUsers = (req, res) => {
+module.exports.sendUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => {
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
-    });
+    // .catch(() => {
+    //   res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+    // });
+    .catch((err) => next(err));
 };
 
-module.exports.sendUserById = (req, res) => {
+module.exports.sendUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
@@ -29,29 +30,37 @@ module.exports.sendUserById = (req, res) => {
         res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
         return;
       }
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+      next(err);
+      // res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  bcrypt.hash(req.body.password, 10)
+  User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        res.status(EMAIL_IS_TAKEN).send({ message: 'Пользователь с такой почтой уже зарегистрирован' });
+      }
+      return bcrypt.hash(req.body.password, 10);
+    })
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
+    .then((user) => User.findOne({ _id: user._id }))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
         return;
       }
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => {
@@ -66,11 +75,11 @@ module.exports.updateUser = (req, res) => {
         res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
         return;
       }
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
@@ -85,11 +94,11 @@ module.exports.updateAvatar = (req, res) => {
         res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
         return;
       }
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -102,11 +111,15 @@ module.exports.login = (req, res) => {
       res.send({ message: 'Авторизация прошла успешна', token });
     })
     .catch((err) => {
-      res.status(AUTH_ERROR_CODE).send({ message: err.message });
+      if (err.message === 'IncorrectEmail') {
+        res.status(AUTH_ERROR_CODE).send({ message: 'Неправильный логин или пароль' });
+        return;
+      }
+      next(err);
     });
 };
 
-module.exports.getMe = (req, res) => {
+module.exports.getMe = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
@@ -120,6 +133,6 @@ module.exports.getMe = (req, res) => {
         res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
         return;
       }
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };

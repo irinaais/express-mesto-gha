@@ -3,8 +3,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { NOT_FOUND_CODE } = require('./utils/constants');
+const { NOT_FOUND_CODE, DEFAULT_ERROR_CODE } = require('./utils/constants');
 const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -29,6 +30,10 @@ app.post('/signup', createUser);
 
 app.use((req, res) => {
   res.status(NOT_FOUND_CODE).send({ message: 'Указанная страница не найдена' });
+});
+app.use(auth);
+app.use((err, req, res) => {
+  res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
 });
 
 async function main() {
