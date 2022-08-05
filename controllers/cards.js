@@ -1,15 +1,13 @@
 const Card = require('../models/card');
-const { NOT_FOUND_CODE, BAD_REQUEST_CODE, DEFAULT_ERROR_CODE } = require('../utils/constants');
+const { NOT_FOUND_CODE, BAD_REQUEST_CODE } = require('../utils/constants');
 
-module.exports.sendCards = (req, res) => {
+module.exports.sendCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch(() => {
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
-    });
+    .catch((err) => next(err));
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const ownerId = req.user._id;
   Card.create({ name, link, owner: ownerId })
@@ -19,11 +17,11 @@ module.exports.createCard = (req, res) => {
         res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
         return;
       }
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
@@ -37,11 +35,11 @@ module.exports.deleteCard = (req, res) => {
         res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
         return;
       }
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -59,11 +57,11 @@ module.exports.likeCard = (req, res) => {
         res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
         return;
       }
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -81,6 +79,6 @@ module.exports.dislikeCard = (req, res) => {
         res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
         return;
       }
-      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
