@@ -10,9 +10,6 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 module.exports.sendUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    // .catch(() => {
-    //   res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
-    // });
     .catch((err) => next(err));
 };
 
@@ -31,7 +28,6 @@ module.exports.sendUserById = (req, res, next) => {
         return;
       }
       next(err);
-      // res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка' });
     });
 };
 

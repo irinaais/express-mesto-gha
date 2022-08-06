@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const { NOT_FOUND_CODE, DEFAULT_ERROR_CODE } = require('./utils/constants');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const { registerValidator, authValidator } = require('./middlewares/validation');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -14,19 +15,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '62e06557b4f23d0f5b1ec9d2', // захардкодили id создателя для всех карточек
-//   };
-//
-//   next();
-// });
-
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signup', registerValidator, createUser);
+app.post('/signin', authValidator, login);
 
 app.use((req, res) => {
   res.status(NOT_FOUND_CODE).send({ message: 'Указанная страница не найдена' });
