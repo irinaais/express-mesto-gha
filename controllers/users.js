@@ -35,11 +35,14 @@ module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email,
   } = req.body;
+  console.log('111');
   User.findOne({ email })
     .then((user) => {
       if (user) {
+        console.log('conflictError');
         throw new ConflictError('Пользователь с такой почтой уже зарегистрирован');
       }
+      console.log('register done');
       return bcrypt.hash(req.body.password, 10);
     })
     .then((hash) => User.create({
@@ -49,8 +52,10 @@ module.exports.createUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
+        console.log('validationError');
         throw new ValidationError({ message: 'Переданы некорректные данные' });
       }
+      console.log('nextErr');
       next(err);
     });
 };

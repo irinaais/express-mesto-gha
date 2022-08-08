@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { errors } = require('celebrate');
 const { NOT_FOUND_CODE } = require('./utils/constants');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
@@ -37,4 +38,9 @@ app.use((req, res) => {
   res.status(NOT_FOUND_CODE).send({ message: 'Указанная страница не найдена' });
 });
 
-app.use((err, req, res, next) => { handleError(err, res, next); });
+app.use(errors());
+
+app.use((err, req, res, next) => {
+  console.log('000', err);
+  handleError(err, res, next);
+});
