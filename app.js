@@ -12,22 +12,6 @@ const handleError = require('./middlewares/handleError');
 const { PORT = 3000 } = process.env;
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-
-app.use('/users', require('./routes/users'));
-app.use('/cards', require('./routes/cards'));
-
-app.post('/signup', registerValidator, createUser);
-app.post('/signin', authValidator, login);
-
-app.use((req, res) => {
-  res.status(NOT_FOUND_CODE).send({ message: 'Указанная страница не найдена' });
-});
-app.use(auth);
-app.use((err, req, res, next) => { handleError(err, res, next); });
-
 async function main() {
   await mongoose.connect('mongodb://localhost:27017/mestodb');
   console.log('Connected to mestodb');
@@ -37,3 +21,20 @@ async function main() {
 }
 
 main();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.post('/signup', registerValidator, createUser);
+app.post('/signin', authValidator, login);
+app.use(auth);
+
+app.use('/users', require('./routes/users'));
+app.use('/cards', require('./routes/cards'));
+
+app.use((req, res) => {
+  res.status(NOT_FOUND_CODE).send({ message: 'Указанная страница не найдена' });
+});
+
+app.use((err, req, res, next) => { handleError(err, res, next); });
