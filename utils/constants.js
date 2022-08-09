@@ -4,3 +4,4 @@ module.exports.DEFAULT_ERROR_CODE = 500;
 module.exports.AUTH_ERROR_CODE = 401;
 module.exports.EMAIL_IS_TAKEN = 409;
 module.exports.FORBIDDEN_ERROR_CODE = 403;
+module.exports.JWT_SECRET = 'dev-secret';

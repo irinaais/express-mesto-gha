@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { AUTH_ERROR_CODE } = require('../utils/constants');
+const { JWT_SECRET } = require('../utils/constants');
 
 const handleAuthError = (res) => {
   res.status(AUTH_ERROR_CODE).send({ message: 'Необходима авторизация' });
@@ -21,7 +22,7 @@ module.exports = (req, res, next) => {
   }
   let payload;
   try {
-    payload = jwt.verify(token, 'dev-secret');
+    payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     console.error(err);
     handleAuthError(res);
