@@ -1,5 +1,6 @@
 const Card = require('../models/card');
-const { NOT_FOUND_CODE, BAD_REQUEST_CODE } = require('../utils/constants');
+const ValidationError = require('../errors/ValidationError');
+const NotFoundError = require('../errors/NotFoundError');
 
 module.exports.sendCards = (req, res, next) => {
   Card.find({})
@@ -14,8 +15,7 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
-        return;
+        throw new ValidationError({ message: 'Переданы некорректные данные' });
       }
       next(err);
     });
@@ -25,15 +25,13 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        res.status(NOT_FOUND_CODE).send({ message: 'Указанная карточка не найдена' });
-        return;
+        return next(new NotFoundError('Указанная карточка не найдена'));
       }
-      res.send({ data: card });
+      return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
-        return;
+        throw new ValidationError({ message: 'Переданы некорректные данные' });
       }
       next(err);
     });
@@ -47,15 +45,13 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(NOT_FOUND_CODE).send({ message: 'Указанная карточка не найдена' });
-        return;
+        return next(new NotFoundError('Указанная карточка не найдена'));
       }
-      res.send({ data: card });
+      return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
-        return;
+        throw new ValidationError({ message: 'Переданы некорректные данные' });
       }
       next(err);
     });
@@ -69,15 +65,13 @@ module.exports.dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(NOT_FOUND_CODE).send({ message: 'Указанная карточка не найдена' });
-        return;
+        return next(new NotFoundError('Указанная карточка не найдена'));
       }
-      res.send({ data: card });
+      return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(BAD_REQUEST_CODE).send({ message: 'Переданы некорректные данные' });
-        return;
+        throw new ValidationError({ message: 'Переданы некорректные данные' });
       }
       next(err);
     });
