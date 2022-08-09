@@ -7,7 +7,7 @@ const ConflictError = require('../errors/ConflictError');
 const ValidationError = require('../errors/ValidationError');
 const AuthError = require('../errors/AuthError');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+// const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.sendUsers = (req, res, next) => {
   User.find({})
