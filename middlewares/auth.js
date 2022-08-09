@@ -13,8 +13,8 @@ module.exports = (req, res, next) => {
 
   if (authorization && authorization.startsWith('Bearer ')) {
     token = extractBearerToken(authorization);
-  // } else if (req.cookies.jwt != null) {
-  //   token = req.cookies.jwt;
+  } else if (req.cookies.jwt != null) {
+    token = req.cookies.jwt;
   } else {
     handleAuthError(res);
     return;
