@@ -5,7 +5,7 @@ const {
 const auth = require('../middlewares/auth');
 const { idValidator, createCardValidator } = require('../middlewares/validation');
 
-router.get('/', auth, sendCards);
+router.get('/', sendCards);
 router.post('/', auth, createCardValidator, createCard);
 router.delete('/:cardId', auth, idValidator, deleteCard);
 router.put('/:cardId/likes', auth, idValidator, likeCard);
