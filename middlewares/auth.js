@@ -7,32 +7,49 @@ const handleAuthError = (res) => {
   res.status(AUTH_ERROR_CODE).send({ message: 'Необходима авторизация' });
 };
 
-// remove first 7 symbols, equivalent of 'bearer '
-const extractBearerToken = (header) => header.substring(7);
-
 module.exports = (req, res, next) => {
-  const { authorization } = req.headers;
-  let token;
+  const authorization = req.cookies.jwt;
 
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    token = extractBearerToken(authorization);
-  } else if (req.cookies.jwt != null) {
-    token = req.cookies.jwt;
+  if (!authorization) {
+    handleAuthError(res);
   } else {
-    handleAuthError(res);
-    return;
+    const token = authorization;
+    let payload;
+    try {
+      payload = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+      console.log(err);
+      handleAuthError(res);
+      return;
+    }
+    req.user = payload;
+    next();
   }
-
-  console.log(`JWT_SECRET=${JWT_SECRET}`);
-  console.log(`token=${token}`);
-  let payload;
-  try {
-    payload = jwt.verify(token, JWT_SECRET);
-  } catch (err) {
-    console.log(err);
-    handleAuthError(res);
-    return;
-  }
-  req.user = payload;
-  next();
 };
+// const extractBearerToken = (header) => header.substring(7);
+
+// module.exports = (req, res, next) => {
+//   const { authorization } = req.headers;
+//   let token;
+//
+//   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+//     token = extractBearerToken(authorization);
+//   } else if (req.cookies.jwt != null) {
+//     token = req.cookies.jwt;
+//   } else {
+//     handleAuthError(res);
+//     return;
+//   }
+//   // console.log(`JWT_SECRET=${JWT_SECRET}`);
+//   // console.log(`token=${token}`);
+//   let payload;
+//   try {
+//     payload = jwt.verify(token, JWT_SECRET);
+//   } catch (err) {
+//     console.log(err);
+//     handleAuthError(res);
+//     return;
+//   }
+//   req.user = payload;
+//   next();
+// };
