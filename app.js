@@ -42,6 +42,6 @@ app.use((req, res) => {
 app.use(errors());
 
 app.use((err, req, res, next) => {
-  console.log('000', err);
+  console.log('FINAL ERROR HANDLER, err=', err);
   handleError(err, res, next);
 });

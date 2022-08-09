@@ -30,9 +30,15 @@ module.exports.updateAvatarValidator = celebrate({
   }),
 });
 
-module.exports.idValidator = celebrate({
-  body: Joi.object().keys({
-    userId: Joi.string().hex().length(24),
+module.exports.userIdValidator = celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().length(24).hex().required(),
+  }),
+});
+
+module.exports.cardIdValidator = celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().length(24).hex().required(),
   }),
 });
 
