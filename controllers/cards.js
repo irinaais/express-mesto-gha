@@ -5,7 +5,12 @@ const ForbiddenError = require('../errors/ForbiddenError');
 
 module.exports.sendCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => {
+      if (!cards) {
+        throw new NotFoundError('Карточка не найдена');
+      }
+      res.send({ data: cards });
+    })
     .catch((err) => next(err));
 };
 
