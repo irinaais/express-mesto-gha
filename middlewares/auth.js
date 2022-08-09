@@ -12,7 +12,7 @@ const extractBearerToken = (header) => header.replace('Bearer ', '');
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
   let token;
-  if (authorization && authorization.startsWith('Bearer')) {
+  if (authorization && authorization.startsWith('Bearer') && authorization.length > 20) {
     token = extractBearerToken(authorization);
   } else if (req.cookies.jwt != null) {
     token = req.cookies.jwt;
