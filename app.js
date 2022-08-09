@@ -42,6 +42,6 @@ app.use((req, res) => {
 app.use(errors());
 
 app.use((err, req, res, next) => {
-  console.log('FINAL ERROR HANDLER, err=', err);
+  console.error(err);
   handleError(err, res, next);
 });

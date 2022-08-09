@@ -7,8 +7,6 @@ const ConflictError = require('../errors/ConflictError');
 const ValidationError = require('../errors/ValidationError');
 const AuthError = require('../errors/AuthError');
 
-// const { NODE_ENV, JWT_SECRET } = process.env;
-
 module.exports.sendUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
@@ -35,14 +33,11 @@ module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email,
   } = req.body;
-  console.log('111');
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        console.log('conflictError');
         throw new ConflictError('Пользователь с такой почтой уже зарегистрирован');
       }
-      console.log('register done');
       return bcrypt.hash(req.body.password, 10);
     })
     .then((hash) => User.create({
@@ -52,10 +47,8 @@ module.exports.createUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        console.log('validationError');
         throw new ValidationError({ message: 'Переданы некорректные данные' });
       }
-      console.log('nextErr');
       next(err);
     });
 };
@@ -105,8 +98,6 @@ module.exports.login = (req, res, next) => {
         httpOnly: true,
         sameSite: true,
       });
-      console.log(`Emit token=${token}`);
-      console.log(`With secret=${key}`);
       res.send({ message: 'Авторизация прошла успешна', token });
     })
     .catch((err) => {
