@@ -13,11 +13,11 @@ const extractBearerToken = (header) => header.substring(7);
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
   let token;
-  // if (req.cookies.jwt != null) {
-  //   token = req.cookies.jwt;
-  // } else
+
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
     token = extractBearerToken(authorization);
+  } else if (req.cookies.jwt != null) {
+    token = req.cookies.jwt;
   } else {
     handleAuthError(res);
     return;
