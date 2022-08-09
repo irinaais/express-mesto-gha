@@ -38,7 +38,7 @@ module.exports.idValidator = celebrate({
 
 module.exports.createCardValidator = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().hex().length(24),
+    name: Joi.string().min(2).max(30).required(),
     link: Joi.string().regex(/^((ftp|http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-/])*)?/),
   }),
 });

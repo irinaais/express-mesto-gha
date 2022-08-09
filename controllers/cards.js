@@ -7,9 +7,9 @@ module.exports.sendCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
       if (!cards) {
-        throw new NotFoundError('Карточка не найдена');
+        throw new NotFoundError('Карточки пока не созданы');
       }
-      res.send({ data: cards });
+      return res.send({ data: cards });
     })
     .catch((err) => next(err));
 };
