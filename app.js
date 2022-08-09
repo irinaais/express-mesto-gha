@@ -27,13 +27,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(auth);
-
 app.post('/signup', registerValidator, createUser);
 app.post('/signin', authValidator, login);
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
+
+app.use(auth);
 
 app.use((req, res) => {
   res.status(NOT_FOUND_CODE).send({ message: 'Указанная страница не найдена' });

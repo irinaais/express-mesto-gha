@@ -105,6 +105,8 @@ module.exports.login = (req, res, next) => {
         httpOnly: true,
         sameSite: true,
       });
+      console.log(`Emit token=${token}`);
+      console.log(`With secret=${key}`);
       res.send({ message: 'Авторизация прошла успешна', token });
     })
     .catch((err) => {
