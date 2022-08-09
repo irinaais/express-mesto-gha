@@ -5,16 +5,16 @@ const handleAuthError = (res) => {
   res.status(AUTH_ERROR_CODE).send({ message: 'Необходима авторизация' });
 };
 
-const extractBearerToken = (header) => header.substring(7);
+const extractBearerToken = (header) => header.replace('Bearer ', '');
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
   let token;
 
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+  if (authorization && authorization.startsWith('Bearer ')) {
     token = extractBearerToken(authorization);
-  } else if (req.cookies.jwt != null) {
-    token = req.cookies.jwt;
+  // } else if (req.cookies.jwt != null) {
+  //   token = req.cookies.jwt;
   } else {
     handleAuthError(res);
     return;
