@@ -1,3 +1,4 @@
+const e = require('express');
 const Card = require('../models/card');
 const ValidationError = require('../errors/ValidationError');
 const NotFoundError = require('../errors/NotFoundError');
@@ -26,27 +27,30 @@ module.exports.createCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValidationError({ message: 'Переданы некорректные данные' });
+        next(new ValidationError('Переданы некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (card == null || !card) {
         throw new NotFoundError('Указанная карточка не найдена');
-      } else if (String(card.owner) !== req.user._id) {
+      } else if (!card.owner.equals(req.user._id)) {
         throw new ForbiddenError('Можно удалить только свою карточку');
       }
-      return res.send({ data: card });
+      return card.remove()
+        .then(() => res.send({ data: card }));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new ValidationError({ message: 'Переданы некорректные данные' });
+        next(new ValidationError('Переданы некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -64,9 +68,10 @@ module.exports.likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new ValidationError({ message: 'Переданы некорректные данные' });
+        next(new ValidationError('Переданы некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -84,8 +89,9 @@ module.exports.dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new ValidationError({ message: 'Переданы некорректные данные' });
+        next(new ValidationError('Переданы некорректные данные'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
