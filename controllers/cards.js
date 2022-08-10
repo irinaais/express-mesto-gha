@@ -1,4 +1,3 @@
-const e = require('express');
 const Card = require('../models/card');
 const ValidationError = require('../errors/ValidationError');
 const NotFoundError = require('../errors/NotFoundError');
