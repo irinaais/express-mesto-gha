@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
-const { NOT_FOUND_CODE } = require('./utils/constants');
+const NotFoundError = require('./errors/NotFoundError');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { registerValidator, authValidator } = require('./middlewares/validation');
@@ -35,8 +35,8 @@ app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use((req, res) => {
-  res.status(NOT_FOUND_CODE).send({ message: 'Указанная страница не найдена' });
+app.use((req, res, next) => {
+  next(new NotFoundError('Указанная страница не найдена'));
 });
 
 app.use(errors());

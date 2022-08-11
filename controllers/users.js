@@ -119,11 +119,5 @@ module.exports.getMe = (req, res, next) => {
       }
       return res.send({ data: user });
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new ValidationError('Переданы некорректные данные'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
